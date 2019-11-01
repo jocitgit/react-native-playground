@@ -28,10 +28,10 @@ class Screen5 extends Component {
     async getCustomersAsync() { // Alternative 2
         try {
             let response = await fetch(
-            //    'http://10.0.2.2:3000/customer', // node_server
+                //    'http://10.0.2.2:3000/customer', // node_server
                 'http://10.0.2.2:3000/customers', // express-app
             );
-            let responseJson = await response.json();
+            let responseJson = await response.json(); // should also check for response.ok
             this.setState({ customers: responseJson.data });
         } catch (error) {
             console.error(error);
@@ -45,8 +45,12 @@ class Screen5 extends Component {
             let response = await fetch(url);
             let responseJson = await response.json();
             this.setState({ debug: JSON.stringify(responseJson) });
-            // this.setState({ customerDetail: (responseJson.data.length > 0) ? responseJson.data[0] : {} }); // node_server
-            this.setState({ customerDetail: responseJson.data }); // express-app
+            if (response.ok) {
+                // this.setState({ customerDetail: (responseJson.data.length > 0) ? responseJson.data[0] : {} }); // node_server
+                this.setState({ customerDetail: responseJson.data }); // express-app
+            } else {
+                console.log(responseJson);
+            }
         } catch (error) {
             console.error(error);
         }
@@ -97,7 +101,7 @@ class Screen5 extends Component {
 
     async deleteCustomerAsync(id) {
         try {
-             // let url = 'http://10.0.2.2:3000/customer?id=' + id; // node_server
+            // let url = 'http://10.0.2.2:3000/customer?id=' + id; // node_server
             let url = 'http://10.0.2.2:3000/customers/' + id; // express-app
             let response = await fetch(url, {
                 method: 'DELETE',
